@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/user_repo.dart';
 import 'pages/login_page.dart';
-import 'uri_mappings.dart';
+import 'url_mappings.dart';
 
 class App extends StatefulWidget {
   final SharedPreferences prefs;

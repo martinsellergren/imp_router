@@ -67,7 +67,8 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     } else if (currentStack.length <= 1) {
       return SynchronousFuture(false);
     } else {
-      router.pop();
+      router.setStackBackPointer(router.stackBackPointer + 1);
+      // router.pop();
     }
     return SynchronousFuture(true);
   }

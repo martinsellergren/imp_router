@@ -6,25 +6,34 @@ import 'package:flutter/material.dart';
 
 import 'config.dart';
 import 'page.dart';
+import 'utils/history_transformers.dart';
 import 'utils/utils.dart';
+
+typedef HistoryTransformer = List<List<ImpPage>> Function(List<List<ImpPage>>);
 
 class ImpRouter with ChangeNotifier {
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
 
   int _stackBackPointer = 0;
   final List<ImpPage> _mountedPages = [];
-  final List<List<ImpPage>> _stackHistory = [];
+  List<List<ImpPage>> _stackHistory = [];
   ImpPage? overlay;
 
   final PageToUri pageToUri;
   final UriToPage uriToPage;
   final int nKeepAlives;
 
+  /// Applied after every push. Can tweak behavior of android back button.
+  final HistoryTransformer? historyTransformer;
+
   ImpRouter({
     required this.pageToUri,
     required this.uriToPage,
     int? nKeepAlives,
-  }) : nKeepAlives = kIsWeb ? (nKeepAlives ?? 10) : 0 {
+    HistoryTransformer? historyTransformer,
+  })  : nKeepAlives = kIsWeb ? (nKeepAlives ?? 10) : 0,
+        historyTransformer =
+            (historyTransformer ?? platformHistoryTransformer) {
     addListener(() {
       if (currentStack != null) {
         _stackStreamController.add(currentStack!);
@@ -84,6 +93,9 @@ class ImpRouter with ChangeNotifier {
             ..onWidgetUnmounting = _removeMountedPage,
         )
         .toList());
+    if (historyTransformer != null) {
+      _stackHistory = historyTransformer!(_stackHistory);
+    }
     notifyListeners();
   }
 
