@@ -11,6 +11,7 @@ import 'config.dart';
 import 'page.dart';
 import 'router.dart';
 import 'utils/transition_delegate.dart';
+import 'utils/utils.dart';
 
 class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     with ChangeNotifier {
@@ -55,7 +56,19 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
 
   @override
   Future<bool> popRoute() {
-    print('<me> pop');
+    final currentStack = router.currentStack;
+    if (currentStack == null) return SynchronousFuture(false);
+    final currentTop = currentStack.last;
+    final prevStack =
+        router.stackHistory.reversed.elementAtSafe(router.stackBackPointer + 1);
+    final prevTop = prevStack?.last;
+    if (prevTop != null && currentTop.widgetKey == prevTop.widgetKey) {
+      router.setStackBackPointer(router.stackBackPointer + 1);
+    } else if (currentStack.length <= 1) {
+      return SynchronousFuture(false);
+    } else {
+      router.pop();
+    }
     return SynchronousFuture(true);
   }
 
@@ -68,11 +81,12 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Visibility(
-              visible: false,
-              maintainState: true,
-              child: _KeepAlives(router: router),
-            ),
+            if (router.keepAlives.isNotEmpty)
+              Visibility(
+                visible: false,
+                maintainState: true,
+                child: _KeepAlives(router: router),
+              ),
             _Navigator(router: router),
           ],
         ),
