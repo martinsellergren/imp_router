@@ -68,11 +68,10 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     final currentStack = router.currentStack;
     if (currentStack == null) return SynchronousFuture(false);
     if (router.overlay != null) return SynchronousFuture(false);
-    final currentTop = currentStack.last;
     final prevStack =
         router.stackHistory.reversed.elementAtSafe(router.stackBackPointer + 1);
     final prevTop = prevStack?.last;
-    if (prevTop != null && currentTop.widgetKey == prevTop.widgetKey) {
+    if (prevTop != null) {
       router.setStackBackPointer(router.stackBackPointer + 1);
     } else if (currentStack.length <= 1) {
       return SynchronousFuture(false);

@@ -5,4 +5,5 @@ export 'src/delegate.dart';
 export 'src/page.dart';
 export 'src/router.dart';
 export 'src/utils/container_transform_transition.dart';
+export 'src/utils/history_transformers.dart';
 export 'src/utils/utils.dart' show usePathUrlStrategy;

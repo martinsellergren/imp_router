@@ -55,7 +55,7 @@ class ImpPage extends Page {
 
   @override
   String toString() {
-    return 'ImpPage(uri=$uri widget=${widget.runtimeType}, widgetKey=$widgetKey, hash=$hashCode)';
+    return 'ImpPage(uri=$uri)'; // widget=${widget.runtimeType}, widgetKey=$widgetKey, hash=$hashCode)';
   }
 }
 

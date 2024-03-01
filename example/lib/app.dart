@@ -25,6 +25,8 @@ class _AppState extends State<App> {
     initialPage: const HomePage(),
     pageToUri: pageToUri,
     uriToPage: uriToPage,
+    historyTransformer: noBackingDownHistoryTransformer,
+    nKeepAlives: 10,
   );
   late final _userRepo = UserRepo(prefs: widget.prefs);
 

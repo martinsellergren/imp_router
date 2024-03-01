@@ -10,7 +10,8 @@ import 'page.dart';
 import 'utils/history_transformers.dart';
 import 'utils/utils.dart';
 
-typedef HistoryTransformer = List<List<ImpPage>> Function(List<List<ImpPage>>);
+typedef HistoryTransformer = List<List<ImpPage>> Function(
+    List<List<ImpPage>> currentStackHistory);
 
 class ImpRouter with ChangeNotifier {
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
@@ -41,7 +42,7 @@ class ImpRouter with ChangeNotifier {
   final int nKeepAlives;
 
   /// Applied after every push. Can tweak behavior of android back button.
-  final HistoryTransformer? historyTransformer;
+  final HistoryTransformer historyTransformer;
 
   ImpRouter({
     this.pageToUri,
@@ -49,9 +50,9 @@ class ImpRouter with ChangeNotifier {
     required this.initialPage,
     int? nKeepAlives,
     HistoryTransformer? historyTransformer,
-  })  : nKeepAlives = kIsWeb ? (nKeepAlives ?? 10) : 0,
+  })  : nKeepAlives = nKeepAlives ?? (kIsWeb ? 10 : 0),
         historyTransformer =
-            (historyTransformer ?? platformHistoryTransformer) {
+            (historyTransformer ?? platformDefaultHistoryTransformer) {
     addListener(() {
       if (stack.isNotEmpty) {
         _stackStreamController.add(stack);
@@ -119,9 +120,7 @@ class ImpRouter with ChangeNotifier {
             ..uri ??= pageToUri?.call(e.widget),
         )
         .toList());
-    if (historyTransformer != null) {
-      stackHistory = historyTransformer!(stackHistory);
-    }
+    stackHistory = historyTransformer(stackHistory);
     notifyListeners();
   }
 
