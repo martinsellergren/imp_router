@@ -47,18 +47,17 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     if (backPointer != null && newPageHash != null) {
       router.setStackBackPointer(backPointer);
     } else if (newUri != router.top?.uri) {
-      final widget = router.uriToPage(configuration.uri);
-      final uri = router.pageToUri(widget);
-      router.pushNewStack([
-        ImpPage(uri: uri, widget: widget),
-      ]);
+      final widget =
+          router.uriToPage?.call(configuration.uri) ?? router.initialPage;
+      router.pushNewStack([ImpPage(widget: widget)]);
     }
     return SynchronousFuture(null);
   }
 
   @override
   ImpRouteInformation? get currentConfiguration {
-    final uri = router.top?.uri;
+    final top = router.top?.widget;
+    final uri = top == null ? null : router.pageToUri?.call(top);
     return uri == null
         ? null
         : ImpRouteInformation(uri: uri, pageHash: router.top.hashCode);

@@ -21,8 +21,19 @@ class ImpRouter with ChangeNotifier {
   List<List<ImpPage>> stackHistory = [];
   ImpPage? overlay;
 
-  final PageToUri pageToUri;
-  final UriToPage uriToPage;
+  /// This mapper is used to connect a page (some widget) to an uri. This is
+  /// good for two things:
+  /// 1) On web, this uri appears in address bar, which also enables navigation
+  ///    with browser back/forward buttons.
+  /// 2) The uri is attached to corresponding ImpPage, see [ImpPage.uri].
+  final PageToUri? pageToUri;
+
+  /// This mapper is used when the app receives a new url to decide which widget to show.
+  /// A web app typically receives a new url when you manually enter an url in the address bar or when you refresh the page.
+  /// A non-web app on the other hand may only receive an url through [deep linking](https://docs.flutter.dev/ui/navigation/deep-linking).
+  /// If this is null, app will default to initialPage whenever it receives a new url.
+  /// Note, this map is not used to determine the initialPage.
+  final UriToPage? uriToPage;
 
   /// Shown initially, and whenever user navigates to / in a browser.
   final Widget initialPage;
@@ -33,8 +44,8 @@ class ImpRouter with ChangeNotifier {
   final HistoryTransformer? historyTransformer;
 
   ImpRouter({
-    required this.pageToUri,
-    required this.uriToPage,
+    this.pageToUri,
+    this.uriToPage,
     required this.initialPage,
     int? nKeepAlives,
     HistoryTransformer? historyTransformer,
@@ -104,7 +115,8 @@ class ImpRouter with ChangeNotifier {
         .map(
           (e) => e
             ..onWidgetMounting = _addMountedPage
-            ..onWidgetUnmounting = _removeMountedPage,
+            ..onWidgetUnmounting = _removeMountedPage
+            ..uri ??= pageToUri?.call(e.widget),
         )
         .toList());
     if (historyTransformer != null) {
@@ -124,7 +136,6 @@ class ImpRouter with ChangeNotifier {
     if (replace && newStack.isNotEmpty) newStack.removeLast();
     newStack.add(
       ImpPage(
-        uri: pageToUri(page),
         widget: page,
         transition: transition ??
             (replace
@@ -144,7 +155,6 @@ class ImpRouter with ChangeNotifier {
     if (newStack.isEmpty && fallback != null) {
       newStack.add(
         ImpPage(
-          uri: pageToUri(fallback),
           widget: fallback,
           transition: const FadeThroughPageTransitionsBuilder(),
         ),
@@ -160,7 +170,6 @@ class ImpRouter with ChangeNotifier {
     ImpPage replaced = newStack.removeLast();
     newStack.add(
       ImpPage(
-        uri: pageToUri(page),
         widget: page,
         transition: replaced.transition,
         widgetKey: replaced.widgetKey,
@@ -182,7 +191,6 @@ class ImpRouter with ChangeNotifier {
     this.overlay = overlay == null
         ? null
         : (ImpPage(
-            uri: pageToUri(overlay),
             widget: overlay,
             transition: transition,
             transitionDuration: transitionDuration,

@@ -40,11 +40,11 @@ Tween<RelativeRect> _createTween(BuildContext context) {
   );
 }
 
-/// The ContainerTransformPageTransitionsBuilder occasionally triggers
-/// 'RenderFlex overflowed' assertion. This is quite impossible to disable
-/// (see https://github.com/flutter/flutter/issues/100789), except doing it the
-/// forceful way:
-/// in main:
+/// The ContainerTransformPageTransitionsBuilder often triggers a 'RenderFlex
+/// overflowed' assertion. This is expected and harmless, just quite impossible
+/// to disable (see https://github.com/flutter/flutter/issues/100789), except
+/// doing it the forceful way:
+/// in main,
 /// FlutterError.onError = presentFlutterErrorWithTruncatedRenderFlexOverflowMessage();
 ///
 /// Result is, instead of cluttered logs, there's just 1 line debugPrint, e.g

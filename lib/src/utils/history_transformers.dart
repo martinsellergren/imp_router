@@ -18,9 +18,9 @@ HistoryTransformer? get platformHistoryTransformer {
 
 /// On android, say we have 3 tabs, A, B and C, and navigate e.g A->B->A->C,
 /// then, normally (i.e with historyTransformer=null), back button will take you
-/// revers direction e.g C->A->B->A->pop. But using this transformer and tapping
-/// back button, instead it goes C->A->B->pop.
-/// Note, pages without an uri can never be skipped.
+/// revers direction e.g C->A->B->A->pop. But using this transformer it will instead it go C->A->B->pop.
+///
+/// IMPORTANT: Pages without an uri can never be skipped. See [ImpPage.uri].
 List<List<ImpPage>> uniquePageUpdatesHistoryTransformer(
     List<List<ImpPage>> stackHistory) {
   if (stackHistory.isEmpty) return [];
