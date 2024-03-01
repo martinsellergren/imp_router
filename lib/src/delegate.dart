@@ -58,6 +58,7 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
   Future<bool> popRoute() {
     final currentStack = router.currentStack;
     if (currentStack == null) return SynchronousFuture(false);
+    if (router.overlay != null) return SynchronousFuture(false);
     final currentTop = currentStack.last;
     final prevStack =
         router.stackHistory.reversed.elementAtSafe(router.stackBackPointer + 1);
@@ -68,7 +69,6 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
       return SynchronousFuture(false);
     } else {
       router.setStackBackPointer(router.stackBackPointer + 1);
-      // router.pop();
     }
     return SynchronousFuture(true);
   }
@@ -176,10 +176,7 @@ class _Navigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      pages: [
-        ...router.currentStack ?? [],
-        if (router.overlay != null) router.overlay!,
-      ],
+      pages: [...router.stack],
       transitionDelegate: ImpTransitionDelegate(),
       onPopPage: (route, result) {
         router.pop();

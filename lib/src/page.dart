@@ -3,6 +3,12 @@ import 'package:meta/meta.dart';
 
 // ignore: must_be_immutable
 class ImpPage extends Page {
+  final Uri? uri;
+  final GlobalKey widgetKey;
+  final Widget widget;
+  final PageTransitionsBuilder? transition;
+  final Duration transitionDuration;
+
   ImpPage({
     required this.uri,
     GlobalKey? widgetKey,
@@ -17,12 +23,6 @@ class ImpPage extends Page {
           name: uri.toString(),
           key: UniqueKey(),
         );
-
-  final Uri? uri;
-  final GlobalKey widgetKey;
-  final Widget widget;
-  final PageTransitionsBuilder? transition;
-  final Duration transitionDuration;
 
   @internal
   Function(ImpPage page)? onWidgetMounting;

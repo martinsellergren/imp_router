@@ -32,16 +32,10 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-
-    _router.addListener(() {
-      // print('stackHistory: \n${_router.stackHistory.join('\n')}');
-      // print('current: ${_router.currentStack}\n');
-    });
-
     _subs = [
       _router.stackStream
-          .cast<List<ImpPage>?>()
-          .startWith(_router.currentStack)
+          .startWith(_router.stack)
+          .where((e) => e.isNotEmpty)
           .whereNotNull()
           .listen((stack) => print('<me> stack: $stack')),
       _userRepo.stream

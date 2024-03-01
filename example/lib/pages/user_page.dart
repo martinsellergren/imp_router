@@ -35,7 +35,7 @@ class UserPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => context.impRouter.pushNewStack(
-                [context.impRouter.currentStack!.first],
+                [context.impRouter.stack.first],
               ),
               child: const Text('Home'),
             ),

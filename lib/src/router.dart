@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 import 'config.dart';
 import 'page.dart';
@@ -16,7 +17,8 @@ class ImpRouter with ChangeNotifier {
 
   int _stackBackPointer = 0;
   final List<ImpPage> _mountedPages = [];
-  List<List<ImpPage>> _stackHistory = [];
+  @internal
+  List<List<ImpPage>> stackHistory = [];
   ImpPage? overlay;
 
   final PageToUri pageToUri;
@@ -35,8 +37,8 @@ class ImpRouter with ChangeNotifier {
         historyTransformer =
             (historyTransformer ?? platformHistoryTransformer) {
     addListener(() {
-      if (currentStack != null) {
-        _stackStreamController.add(currentStack!);
+      if (stack.isNotEmpty) {
+        _stackStreamController.add(stack);
       }
     });
   }
@@ -57,17 +59,24 @@ class ImpRouter with ChangeNotifier {
     notifyListeners();
   }
 
+  // Does not include overlay.
+  @internal
+  List<ImpPage>? get currentStack =>
+      stackHistory.elementAtSafe(stackHistory.length - 1 - _stackBackPointer);
+
   // public interface:
 
+  /// Empty only before router has shown first page.
+  List<ImpPage> get stack => [
+        ...currentStack ?? [],
+        if (overlay != null) overlay!,
+      ];
+
+  /// Null only before router has shown first page.
+  ImpPage? get top => stack.lastOrNull;
+
   Stream<List<ImpPage>> get stackStream =>
-      _stackStreamController.stream.distinct();
-
-  List<List<ImpPage>> get stackHistory => _stackHistory.toList();
-
-  List<ImpPage>? get currentStack =>
-      stackHistory.elementAtSafe(_stackHistory.length - 1 - _stackBackPointer);
-
-  ImpPage? get top => currentStack?.lastOrNull;
+      _stackStreamController.stream.distinct(listEquals);
 
   int get stackBackPointer => _stackBackPointer;
 
@@ -76,7 +85,7 @@ class ImpRouter with ChangeNotifier {
       ...currentStack?.map((e) => e.widgetKey) ?? [],
       ..._mountedPages.map((e) => e.widgetKey),
     };
-    return _stackHistory.reversed
+    return stackHistory.reversed
         .expand((stack) => stack.reversed)
         .where((page) => seenWidgetKeys.add(page.widgetKey))
         .take(nKeepAlives)
@@ -84,9 +93,9 @@ class ImpRouter with ChangeNotifier {
   }
 
   void pushNewStack(List<ImpPage> newStack) {
-    List.generate(_stackBackPointer, (index) => _stackHistory.removeLast());
+    List.generate(_stackBackPointer, (index) => stackHistory.removeLast());
     _stackBackPointer = 0;
-    _stackHistory.add(newStack
+    stackHistory.add(newStack
         .map(
           (e) => e
             ..onWidgetMounting = _addMountedPage
@@ -94,7 +103,7 @@ class ImpRouter with ChangeNotifier {
         )
         .toList());
     if (historyTransformer != null) {
-      _stackHistory = historyTransformer!(_stackHistory);
+      stackHistory = historyTransformer!(stackHistory);
     }
     notifyListeners();
   }
