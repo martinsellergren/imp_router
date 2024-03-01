@@ -23,6 +23,7 @@ class ImpRouter with ChangeNotifier {
 
   final PageToUri pageToUri;
   final UriToPage uriToPage;
+  final Widget initialPage;
   final int nKeepAlives;
 
   /// Applied after every push. Can tweak behavior of android back button.
@@ -31,6 +32,7 @@ class ImpRouter with ChangeNotifier {
   ImpRouter({
     required this.pageToUri,
     required this.uriToPage,
+    required this.initialPage,
     int? nKeepAlives,
     HistoryTransformer? historyTransformer,
   })  : nKeepAlives = kIsWeb ? (nKeepAlives ?? 10) : 0,

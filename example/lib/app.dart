@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/user_repo.dart';
 import 'nav_targets.dart';
+import 'pages/home/home_page.dart';
 import 'pages/login_page.dart';
 
 class App extends StatefulWidget {
@@ -21,6 +22,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final _router = ImpRouter(
+    initialPage: const HomePage(),
     pageToUri: pageToUri,
     uriToPage: uriToPage,
     nKeepAlives: 10,
@@ -37,7 +39,7 @@ class _AppState extends State<App> {
           .startWith(_router.stack)
           .where((e) => e.isNotEmpty)
           .listen((stack) => print(
-              '<me> stack: ${stack.map((e) => e.uri == null ? null : NavTargets.fromUri(e.uri!))}')),
+              '<me> stack: ${stack.map((e) => e.uri == null ? null : NavTarget.fromUri(e.uri!))}')),
       _userRepo.stream
           .startWith(_userRepo.state)
           .map((state) => state.status == AuthStatus.loggedIn)
