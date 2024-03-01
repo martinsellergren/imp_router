@@ -36,10 +36,10 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
 
 extension on RouteTransitionRecord {
   bool isAnUpdate(List<RouteTransitionRecord> newPageRouteHistory) {
-    final page = route.settings.impPage;
+    final page = route.impPage;
     if (page == null) return false;
     final res = newPageRouteHistory.any((e) {
-      final p = e.route.settings.impPage;
+      final p = e.route.impPage;
       if (p == null) return false;
       return page.widgetKey == p.widgetKey && page.key != p.key;
     });

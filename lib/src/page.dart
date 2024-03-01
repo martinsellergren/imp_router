@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 // ignore: must_be_immutable
 class ImpPage extends Page {
@@ -23,7 +24,9 @@ class ImpPage extends Page {
   final PageTransitionsBuilder? transition;
   final Duration transitionDuration;
 
+  @internal
   Function(ImpPage page)? onWidgetMounting;
+  @internal
   Function(ImpPage page)? onWidgetUnmounting;
 
   @override
@@ -102,6 +105,6 @@ class ImpRoute extends PageRouteBuilder {
   }
 }
 
-extension RouteSettingsImpPage on RouteSettings {
-  ImpPage? get impPage => this is ImpPage ? this as ImpPage : null;
+extension RouteImpPage on Route {
+  ImpPage? get impPage => settings is ImpPage ? settings as ImpPage : null;
 }
