@@ -1,9 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import '../page.dart';
 import '../router.dart';
 
 HistoryTransformer? get platformHistoryTransformer {
+  if (kIsWeb) {
+    return null;
+  }
   if (Platform.isAndroid) {
     return uniquePageUpdatesHistoryTransformer;
   } else {
