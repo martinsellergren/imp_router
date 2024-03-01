@@ -1,8 +1,10 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:imp_router/imp_router.dart';
 
 import '../app.dart';
 import '../shared.dart';
+import 'home/home_page.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -34,9 +36,17 @@ class UserPage extends StatelessWidget {
               child: const Text('Push another and replace top'),
             ),
             TextButton(
-              onPressed: () => context.impRouter.pushNewStack(
-                [context.impRouter.stack.first],
-              ),
+              onPressed: () {
+                final router = context.impRouter;
+                router.pushNewStack([
+                  router.stack.first.widget is HomePage
+                      ? router.stack.first
+                      : ImpPage(
+                          widget: const HomePage(),
+                          transition: const FadeThroughPageTransitionsBuilder(),
+                        ),
+                ]);
+              },
               child: const Text('Home'),
             ),
             TextButton(

@@ -7,9 +7,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/user_repo.dart';
-import 'nav_targets.dart';
 import 'pages/home/home_page.dart';
 import 'pages/login_page.dart';
+import 'router_mappings.dart';
 
 class App extends StatefulWidget {
   final SharedPreferences prefs;
@@ -25,7 +25,6 @@ class _AppState extends State<App> {
     initialPage: const HomePage(),
     pageToUri: pageToUri,
     uriToPage: uriToPage,
-    nKeepAlives: 10,
   );
   late final _userRepo = UserRepo(prefs: widget.prefs);
 
@@ -38,8 +37,8 @@ class _AppState extends State<App> {
       _router.stackStream
           .startWith(_router.stack)
           .where((e) => e.isNotEmpty)
-          .listen((stack) => print(
-              '<me> stack: ${stack.map((e) => e.uri == null ? null : NavTarget.fromUri(e.uri!))}')),
+          .listen(
+              (stack) => print('<me> stack: ${stack.map((e) => e.navTarget)}')),
       _userRepo.stream
           .startWith(_userRepo.state)
           .map((state) => state.status == AuthStatus.loggedIn)

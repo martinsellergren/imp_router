@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imp_router/imp_router.dart';
 
 import 'pages/book_details_page.dart';
 import 'pages/home/home_page.dart';
@@ -19,7 +20,7 @@ enum NavTarget {
         NavTarget.notFound => '/oups',
         NavTarget.books => '/books',
         NavTarget.authors => '/authors',
-        NavTarget.misc => '/mics',
+        NavTarget.misc => '/misc',
         NavTarget.bookDetails => '/book',
         NavTarget.user => '/user/details',
         NavTarget.login => '/login'
@@ -41,14 +42,15 @@ enum NavTarget {
   }
 
   static NavTarget fromUri(Uri uri) {
-    return NavTarget.values.firstWhere(
+    final res = NavTarget.values.firstWhere(
       (e) => uri.path == e.path,
       orElse: () => NavTarget.notFound,
     );
+    return res;
   }
 }
 
-/// Uri path must start with slash /, or else app will crash on web.
+/// Uri paths must start with slash /, or else app will crash on web.
 Uri? pageToUri(Widget page) {
   final destination = NavTarget.fromPage(page);
   return switch (destination) {
@@ -68,22 +70,29 @@ Uri? pageToUri(Widget page) {
 }
 
 Widget uriToPage(Uri uri) {
-  // redirect / to /books
-  // '/' has special meaning - it's the initial path that router receives when
-  // there's no deep-link/ entered url going on.
-  // In this case, '/' leads to HomePage, which sets url to /books, as above.
-  if (uri.path == '/') {
-    return const HomePage(tab: HomeTab.books);
+  // redirects
+  switch (uri.path) {
+    case '/writers':
+      return const HomePage(tab: HomeTab.authors);
+    case '/account':
+      return const UserPage();
   }
+
+  // real targets
   final destination = NavTarget.fromUri(uri);
-  return switch (destination) {
+  final res = switch (destination) {
     NavTarget.notFound => const NotFoundPage(),
     NavTarget.books => const HomePage(tab: HomeTab.books),
-    NavTarget.authors => const HomePage(tab: HomeTab.books),
+    NavTarget.authors => const HomePage(tab: HomeTab.authors),
     NavTarget.misc => const HomePage(tab: HomeTab.misc),
     NavTarget.bookDetails =>
       BookDetailsPage(title: uri.queryParameters['title']!),
     NavTarget.user => const UserPage(),
     NavTarget.login => const LoginPage(),
   };
+  return res;
+}
+
+extension ImpPageNavTarget on ImpPage {
+  NavTarget? get navTarget => uri == null ? null : NavTarget.fromUri(uri!);
 }

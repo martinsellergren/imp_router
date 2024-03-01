@@ -23,7 +23,10 @@ class ImpRouter with ChangeNotifier {
 
   final PageToUri pageToUri;
   final UriToPage uriToPage;
+
+  /// Shown initially, and whenever user navigates to / in a browser.
   final Widget initialPage;
+
   final int nKeepAlives;
 
   /// Applied after every push. Can tweak behavior of android back button.
@@ -110,6 +113,7 @@ class ImpRouter with ChangeNotifier {
     notifyListeners();
   }
 
+  /// [transition] is compatible with e.g https://pub.dev/packages/animations
   void push(
     Widget page, {
     bool replace = false,
