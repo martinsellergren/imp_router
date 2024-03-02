@@ -23,20 +23,13 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
   }
 
   @override
-  Future<void> setInitialRoutePath(ImpRouteInformation configuration) {
-    if (configuration.uri.path == '/') {
-      router.push(router.initialPage);
-      return SynchronousFuture(null);
-    } else {
-      return setNewRoutePath(configuration);
-    }
-  }
-
-  @override
   Future<void> setNewRoutePath(ImpRouteInformation configuration) {
     final newUri = configuration.uri;
     final newPageHash = configuration.pageHash;
-    if (router.top.hashCode == newPageHash) {
+    if (newUri.path == '/') {
+      router.push(router.initialPage);
+      return SynchronousFuture(null);
+    } else if (newPageHash != null && newPageHash == router.top.hashCode) {
       return SynchronousFuture(null);
     }
     final backPointer = router.stackHistory.reversed

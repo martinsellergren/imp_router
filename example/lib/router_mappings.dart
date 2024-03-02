@@ -79,8 +79,8 @@ Widget uriToPage(Uri uri) {
   }
 
   // real targets
-  final destination = NavTarget.fromUri(uri);
-  final res = switch (destination) {
+  final target = NavTarget.fromUri(uri);
+  final res = switch (target) {
     NavTarget.notFound => const NotFoundPage(),
     NavTarget.books => const HomePage(tab: HomeTab.books),
     NavTarget.authors => const HomePage(tab: HomeTab.authors),
