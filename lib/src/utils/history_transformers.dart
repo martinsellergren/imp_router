@@ -19,6 +19,8 @@ HistoryTransformer get platformDefaultHistoryTransformer {
 
 /// Back button takes you back chronologically, i.e it can push back previous screen.
 /// This is what happens without filtering.
+/// When a popped screen it pushed back its previous state is preserved if [ImpRouter.nKeepAlives]
+/// is > 0.
 List<List<ImpPage>> chronologicalHistoryTransformer(
     List<List<ImpPage>> stackHistory) {
   return stackHistory;
