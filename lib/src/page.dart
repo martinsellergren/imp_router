@@ -16,23 +16,20 @@ class ImpPage extends Page {
   final GlobalKey widgetKey;
   final Widget widget;
   final PageTransitionsBuilder? transition;
-  final Duration transitionDuration;
 
   ImpPage({
     this.uri,
     GlobalKey? widgetKey,
     required this.widget,
     this.transition,
-    Duration? transitionDuration,
   })  : widgetKey = widgetKey ?? GlobalKey(),
-        transitionDuration = transition == null
-            ? Duration.zero
-            : const Duration(milliseconds: 300),
         super(
           name: uri.toString(),
           key: UniqueKey(),
         );
 
+  @internal
+  bool? forceBackSwipeableTransitionsOnIos;
   @internal
   Function(ImpPage page)? onWidgetMounting;
   @internal
@@ -41,13 +38,13 @@ class ImpPage extends Page {
   @override
   Route createRoute(BuildContext context) {
     return ImpRoute(
-      pageBuilder: (_, __, ___) => KeyedSubtree(
+      builder: (context) => KeyedSubtree(
         key: widgetKey,
         child: widget,
       ),
       settings: this,
       transition: transition,
-      transitionDuration: transitionDuration,
+      forceBackSwipeableTransitionsOnIos: forceBackSwipeableTransitionsOnIos!,
       onWidgetMounting: onWidgetMounting!,
       onWidgetUnmounting: onWidgetUnmounting!,
     );
@@ -59,18 +56,19 @@ class ImpPage extends Page {
   }
 }
 
-class ImpRoute extends PageRouteBuilder {
+class ImpRoute extends MaterialPageRoute {
   ImpRoute({
-    required super.pageBuilder,
+    required super.builder,
     required super.settings,
     required this.transition,
-    required super.transitionDuration,
+    required this.forceBackSwipeableTransitionsOnIos,
     required this.onWidgetMounting,
     required this.onWidgetUnmounting,
-  }) : super(reverseTransitionDuration: transitionDuration);
+  });
 
   final PageTransitionsBuilder? transition;
 
+  final bool forceBackSwipeableTransitionsOnIos;
   final Function(ImpPage page) onWidgetMounting;
   final Function(ImpPage page) onWidgetUnmounting;
   bool _didCallWidgetUnmounting = false;
@@ -107,10 +105,16 @@ class ImpRoute extends PageRouteBuilder {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return transition == null
-        ? child
-        : transition!.buildTransitions(
+    return transition != null && _allowCustomTransitions(context)
+        ? transition!.buildTransitions(
+            this, context, animation, secondaryAnimation, child)
+        : Theme.of(context).pageTransitionsTheme.buildTransitions(
             this, context, animation, secondaryAnimation, child);
+  }
+
+  bool _allowCustomTransitions(BuildContext context) {
+    return !(Theme.of(context).platform == TargetPlatform.iOS &&
+        forceBackSwipeableTransitionsOnIos);
   }
 }
 

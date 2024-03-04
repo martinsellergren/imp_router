@@ -44,12 +44,15 @@ class ImpRouter with ChangeNotifier {
   /// Applied after every push. Can tweak behavior of android back button.
   final HistoryTransformer historyTransformer;
 
+  final bool forceBackSwipeableTransitionsOnIos;
+
   ImpRouter({
     this.pageToUri,
     this.uriToPage,
     required this.initialPage,
     int? nKeepAlives,
     HistoryTransformer? historyTransformer,
+    this.forceBackSwipeableTransitionsOnIos = false,
   })  : nKeepAlives = nKeepAlives ?? (kIsWeb ? 10 : 0),
         historyTransformer =
             (historyTransformer ?? platformDefaultHistoryTransformer) {
@@ -115,9 +118,11 @@ class ImpRouter with ChangeNotifier {
     stackHistory.add(newStack
         .map(
           (e) => e
+            ..uri ??= pageToUri?.call(e.widget)
+            ..forceBackSwipeableTransitionsOnIos =
+                forceBackSwipeableTransitionsOnIos
             ..onWidgetMounting = _addMountedPage
-            ..onWidgetUnmounting = _removeMountedPage
-            ..uri ??= pageToUri?.call(e.widget),
+            ..onWidgetUnmounting = _removeMountedPage,
         )
         .toList());
     stackHistory = historyTransformer(stackHistory);
@@ -129,7 +134,6 @@ class ImpRouter with ChangeNotifier {
     Widget page, {
     bool replace = false,
     PageTransitionsBuilder? transition,
-    Duration transitionDuration = const Duration(milliseconds: 300),
   }) {
     final newStack = currentStack?.toList() ?? [];
     if (replace && newStack.isNotEmpty) newStack.removeLast();
@@ -142,7 +146,6 @@ class ImpRouter with ChangeNotifier {
                 : const SharedAxisPageTransitionsBuilder(
                     transitionType: SharedAxisTransitionType.horizontal,
                   )),
-        transitionDuration: transitionDuration,
       ),
     );
     pushNewStack(newStack);
@@ -185,18 +188,18 @@ class ImpRouter with ChangeNotifier {
   void setOverlay(
     Widget? overlay, {
     PageTransitionsBuilder? transition,
-    Duration transitionDuration = const Duration(milliseconds: 300),
   }) {
     this.overlay = overlay == null
         ? null
         : (ImpPage(
             widget: overlay,
-            transition: transition,
-            transitionDuration: transitionDuration,
+            transition: transition ?? const FadeThroughPageTransitionsBuilder(),
           )
+          ..uri ??= pageToUri?.call(overlay)
+          ..forceBackSwipeableTransitionsOnIos =
+              forceBackSwipeableTransitionsOnIos
           ..onWidgetMounting = (_) {}
-          ..onWidgetUnmounting = (_) {}
-          ..uri ??= pageToUri?.call(overlay));
+          ..onWidgetUnmounting = (_) {});
     notifyListeners();
   }
 }
