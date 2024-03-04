@@ -177,7 +177,7 @@ class _Navigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      pages: [...router.stack],
+      pages: router.stack,
       transitionDelegate: ImpTransitionDelegate(),
       onPopPage: (route, result) {
         router.pop();

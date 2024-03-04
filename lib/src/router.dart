@@ -195,7 +195,8 @@ class ImpRouter with ChangeNotifier {
             transitionDuration: transitionDuration,
           )
           ..onWidgetMounting = (_) {}
-          ..onWidgetUnmounting = (_) {});
+          ..onWidgetUnmounting = (_) {}
+          ..uri ??= pageToUri?.call(overlay));
     notifyListeners();
   }
 }

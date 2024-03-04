@@ -88,7 +88,7 @@ Widget uriToPage(Uri uri) {
     NavTarget.bookDetails =>
       BookDetailsPage(title: uri.queryParameters['title']!),
     NavTarget.user => const UserPage(),
-    NavTarget.login => const LoginPage(),
+    NavTarget.login => const HomePage(),
   };
   return res;
 }
