@@ -24,37 +24,35 @@ List<List<ImpPage>> chronologicalHistoryTransformer(
   return stackHistory;
 }
 
-/// Going back in history never takes you back to to deeper content.
+/// Going back in history never takes you back to deeper content.
 /// I.e back button can't push back a screen, but can revert page updates.
 List<List<ImpPage>> noBackingDownHistoryTransformer(
     List<List<ImpPage>> stackHistory) {
-  final seenStackSizes = <int>[];
-  addIfSameOrSmaller(int n) {
-    if (seenStackSizes.isEmpty || n <= seenStackSizes.max) {
-      seenStackSizes.add(n);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  final seenTopPages = <ImpPage>{};
-  final res = stackHistory.reversed
-      .where((e) => addIfSameOrSmaller(e.length))
-      .where((e) => seenTopPages.add(e.last))
-      .toList()
-      .reversed
-      .toList();
-  return res;
+  if (stackHistory.isEmpty) return [];
+  final top = stackHistory.last.last;
+  final below = stackHistory.last.reversed.elementAtOrNull(1);
+  return [
+    ...stackHistory.reversed
+        .skip(1)
+        .skipWhile(
+            (e) => !(e.last.widgetKey == top.widgetKey || e.last == below))
+        .skipWhile((e) => e.last == top)
+        .toList()
+        .reversed,
+    stackHistory.last,
+  ];
 }
 
-/// Say we have 3 tabs, A, B and C, and navigate e.g A->B->A->C,
-/// then, normally (i.e chronologically), back button will take you
-/// revers direction e.g C->A->B->A->pop. But using this transformer it will instead it go C->A->B->pop.
+/// Same as [noBackingDownHistoryTransformer] but history only holds unique page
+/// updates - older ones are discarded.
 ///
-/// This also applies noBackingDownHistoryTransformer.
+/// Say we have 3 tabs, A, B and C, and navigate e.g A->B->A->C, then, normally
+/// (i.e [chronologicalHistoryTransformer] / [noBackingDownHistoryTransformer]),
+/// back button will take you revers direction e.g C->A->B->A->pop. But using
+/// this transformer it will instead it go C->A->B->pop.
 ///
-/// IMPORTANT: Page updates without an uri can never be skipped. See [ImpPage.uri].
+/// IMPORTANT: Page updates without an uri can never be discarded. See
+/// [ImpPage.uri].
 List<List<ImpPage>> uniquePageUpdatesHistoryTransformer(
     List<List<ImpPage>> stackHistory) {
   if (stackHistory.isEmpty) return [];
