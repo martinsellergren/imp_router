@@ -1,27 +1,27 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Imperative navigation using flutter's Router, to overcome limitations of the plain Navigator.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Push and pop pages programmatically, basically like we do with flutter's [Navigator](https://docs.flutter.dev/ui/navigation#using-the-navigator). Plus some nice extra features and improvements.
+
+- All platforms: In addition to push and pop, there's also updateCurrent, to pass new parameters to current page.
+- Web: Support browser's backward and forward buttons (including preserving state when revisiting a page).
+- Web: Always stay in sync with browser's address bar.
+- Web: Support redirections.
+- Android: Intelligently handle back button (including undo updateCurrent).
+- All platforms: Support passing custom transitions to any push.
+- All platforms: Easily listen on navigation changes.
+- All platforms: Specify a persistent overlay page, based on some app state.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+
+ImpRouter(
+    initialPage: const HomePage(),
+    pageToUri: pageToUri,
+    uriToPage: uriToPage,
+    forceBackSwipeableTransitionsOnIos: true,
+  )
 
 ## Usage
 

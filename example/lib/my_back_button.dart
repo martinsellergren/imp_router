@@ -15,11 +15,3 @@ class MyBackButton extends StatelessWidget {
     );
   }
 }
-
-T? orNull<T>(T Function() expression) {
-  try {
-    return expression();
-  } catch (e) {
-    return null;
-  }
-}

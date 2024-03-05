@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../shared.dart';
+import '../my_back_button.dart';
 
 class BookDetailsPage extends StatelessWidget {
   final String title;

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'router.dart';
+import 'utils/history_transformers.dart';
+
 // ignore: must_be_immutable
 class ImpPage extends Page {
   /// This uri is set to whatever [ImpRouter.pageToUri] returns. If you push
   /// pages yourself through [ImpRouter.pushNewStack] you may also set it
   /// manually. It doesn't have much functional relevance. You may use it e.g as
-  /// an id. Can be nice to have when you listen on the [stackStream] and want
-  /// to evaluate the received stack of [ImpPage]s.
+  /// an id. Can be nice to have when you listen on the [ImpRouter.stackStream]
+  /// and want to evaluate the received stack of [ImpPage]s.
   ///
   /// This uri is however necessary for the [uniquePageUpdatesHistoryTransformer]
   /// to work properly.

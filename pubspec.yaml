@@ -1,11 +1,15 @@
 name: imp_router
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: "Imperative navigation using flutter's Router, to overcome limitations of the plain Navigator."
+version: 0.1.0
+repository: https://github.com/martinsellergren/imp_router
+issue_tracker: https://github.com/martinsellergren/imp_router/issues
+topics:
+  - imp_router
+  - router
+  - navigator
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -22,5 +26,3 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-flutter:

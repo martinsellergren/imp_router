@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Container transform from https://medium.com/@dudek16/migration-to-go-router-devs-story-199f4ef6ed
-// mimic material3's OpenContainer
+// Container transform that mimic material3's OpenContainer.
 class ContainerTransformPageTransitionsBuilder extends PageTransitionsBuilder {
   /// Must be a context of same size as the trigger button.
   /// Normally just wrap he button in a Builder and the context will be good.
@@ -47,8 +46,8 @@ Tween<RelativeRect> _createTween(BuildContext context) {
 /// in main,
 /// FlutterError.onError = presentFlutterErrorWithTruncatedRenderFlexOverflowMessage();
 ///
-/// Result is, instead of cluttered logs, there's just 1 line debugPrint, e.g
-/// 'A RenderFlex overflowed by 21 pixels on the bottom.'
+/// Result is, instead of cluttered logs in debug mode, there's just 1 line
+/// debugPrint, e.g 'A RenderFlex overflowed by 21 pixels on the bottom.'
 Function(FlutterErrorDetails details)
     presentFlutterErrorWithTruncatedRenderFlexOverflowMessage({
   Function(FlutterErrorDetails details)? furtherHandling,

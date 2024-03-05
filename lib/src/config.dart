@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +7,7 @@ import 'router.dart';
 typedef PageToUri = Uri? Function(Widget page);
 typedef UriToPage = Widget Function(Uri uri);
 
+/// Convenient to use with [MaterialApp.router]'s routerConfig.
 class ImpRouterConfig extends RouterConfig<ImpRouteInformation> {
   ImpRouterConfig({
     required ImpRouter router,
