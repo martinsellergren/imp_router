@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:imp_router/imp_router.dart';
@@ -25,8 +26,9 @@ class _AppState extends State<App> {
     initialPage: const HomePage(),
     pageToUri: pageToUri,
     uriToPage: uriToPage,
-    historyTransformer: noBackingDownHistoryTransformer,
-    nKeepAlives: 10,
+    // historyTransformer: noBackingDownHistoryTransformer,
+    // nKeepAlives: 10,
+    forceBackSwipeableTransitionsOnIos: true,
   );
   late final _userRepo = UserRepo(prefs: widget.prefs);
 
@@ -39,8 +41,8 @@ class _AppState extends State<App> {
       _router.stackStream
           .startWith(_router.stack)
           .where((e) => e.isNotEmpty)
-          .listen(
-              (stack) => print('<me> stack: ${stack.map((e) => e.navTarget)}')),
+          .listen((stack) =>
+              log('stack: ${stack.map((e) => e.navTarget).toList()}')),
       _userRepo.stream
           .startWith(_userRepo.state)
           .map((state) => state.status == AuthStatus.loggedIn)

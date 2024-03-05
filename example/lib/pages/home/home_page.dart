@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
           BooksBody(),
           AuthorsBody(),
           MiscBody(),
-        ],
+        ].map((e) => RepaintBoundary(child: e)).toList(),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: tab.index,
