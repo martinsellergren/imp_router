@@ -14,12 +14,16 @@ import 'utils/utils.dart';
 typedef HistoryTransformer = List<List<ImpPage>> Function(
     List<List<ImpPage>> currentStackHistory);
 
+/// An imperative router.
 class ImpRouter with ChangeNotifier {
   /// This mapper is used to connect a page (some widget) to an uri. This is
   /// good for two things:
-  /// 1) On web, this uri appears in address bar, which also enables navigation
+  /// 1) On web, mapped uri appears in address bar, which also enables navigation
   ///    with browser back/forward buttons.
   /// 2) The uri is attached to corresponding ImpPage, see [ImpPage.uri].
+  ///
+  /// [pageToUri]=null is same as return uri=null for every mapping.
+  /// Leaving this as null is perfectly valid if you don't need this feature.
   final PageToUri? pageToUri;
 
   /// This mapper is used when the app receives a new url to decide which page
@@ -28,6 +32,7 @@ class ImpRouter with ChangeNotifier {
   /// an url through [deep linking](https://docs.flutter.dev/ui/navigation/deep-linking).
   ///
   /// If this is null, app will default to initialPage whenever it receives a new url.
+  /// Leaving this as null is perfectly valid if you don't need this feature.
   final UriToPage? uriToPage;
 
   /// Shown initially, and whenever the app receives the url '/'.
@@ -47,8 +52,7 @@ class ImpRouter with ChangeNotifier {
   ///
   /// The iOS back swipe is really common and expected to work on iOS devices.
   /// So any custom page transitions you specify when pushing may not do well
-  /// particularly on iOS, as back swipe requires transition=
-  /// CupertinoPageTransitionsBuilder.
+  /// on iOS, as back swipe requires transition=CupertinoPageTransitionsBuilder.
   final bool forceBackSwipeableTransitionsOnIos;
 
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
@@ -220,9 +224,11 @@ class ImpRouter with ChangeNotifier {
     pushNewStack(newStack);
   }
 
-  /// Set an overlay page, above everything else.
+  /// Set an overlay page above everything else.
   /// Difference between this and [push] is that this page can't be navigated away
   /// from using e.g android back button or browser buttons.
+  ///
+  /// Set it to null to remove it.
   ///
   /// Note on web: If you want this overlay page to affect the address bar,
   /// simply add it to [pageToUri] as any other page. IMPORTANT though: in

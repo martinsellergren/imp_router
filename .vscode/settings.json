@@ -1,5 +1,8 @@
 {
     "files.exclude": {
         "**/*.freezed.dart": true
-    }
+    },
+    "cSpell.words": [
+        "problemo"
+    ]
 }

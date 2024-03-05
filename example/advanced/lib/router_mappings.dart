@@ -70,7 +70,7 @@ Uri? pageToUri(Widget page) {
 }
 
 Widget uriToPage(Uri uri) {
-  // redirects
+  // redirections
   switch (uri.path) {
     case '/writers':
       return const HomePage(tab: HomeTab.authors);

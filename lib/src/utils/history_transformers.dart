@@ -48,7 +48,8 @@ List<List<ImpPage>> noBackingDownHistoryTransformer(
 /// Same as [noBackingDownHistoryTransformer] but history only holds unique page
 /// updates - older ones are discarded.
 ///
-/// Say we have 3 tabs, A, B and C, and navigate e.g A->B->A->C, then, normally
+/// Say we have 3 tabs, A, B and C, and navigate e.g A->B->A->C with
+/// [ImpRouter.updateCurrent], then, normally
 /// (i.e [chronologicalHistoryTransformer] / [noBackingDownHistoryTransformer]),
 /// back button will take you revers direction e.g C->A->B->A->pop. But using
 /// this transformer it will instead it go C->A->B->pop.

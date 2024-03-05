@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Basic example",
+            "cwd": "example/basic",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Advanced example",
+            "cwd": "example/advanced",
+            "request": "launch",
+            "type": "dart"
+        },
+    ]
+}
