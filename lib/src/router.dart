@@ -241,8 +241,7 @@ class ImpRouter with ChangeNotifier {
             transition: transition ?? const FadeThroughPageTransitionsBuilder(),
           )
           ..uri ??= pageToUri?.call(overlay)
-          ..forceBackSwipeableTransitionsOnIos =
-              forceBackSwipeableTransitionsOnIos
+          ..forceBackSwipeableTransitionsOnIos = false
           ..onWidgetMounting = (_) {}
           ..onWidgetUnmounting = (_) {});
     notifyListeners();
