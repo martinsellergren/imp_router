@@ -56,22 +56,43 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
         : ImpRouteInformation(uri: uri, pageHash: router.top.hashCode);
   }
 
+  // android back button
   @override
   Future<bool> popRoute() {
+    final closeApp = SynchronousFuture(false);
+    final doNothing = SynchronousFuture(true);
     final currentStack = router.currentStack;
-    if (currentStack == null) return SynchronousFuture(false);
-    if (router.overlay != null) return SynchronousFuture(false);
+    if (currentStack == null) return closeApp;
+    if (router.overlay != null) return closeApp;
+    final top = currentStack.last;
+    final topRoute = top.createdRoute;
     final prevStack =
         router.stackHistory.reversed.elementAtSafe(router.stackBackPointer + 1);
     final prevTop = prevStack?.last;
-    if (prevTop != null) {
+    final isPrevAnUpdate =
+        prevTop != null && prevTop.widgetKey == currentStack.last.widgetKey;
+    if (isPrevAnUpdate) {
+      // revert
       router.setStackBackPointer(router.stackBackPointer + 1);
+    } else if (prevTop != null) {
+      // block or revert
+      if (topRoute != null && !topRoute.allowPop) {
+        topRoute.onPopInvoked(false);
+        return doNothing;
+      } else {
+        router.setStackBackPointer(router.stackBackPointer + 1);
+      }
     } else if (currentStack.length <= 1) {
-      return SynchronousFuture(false);
-    } else {
-      router.setStackBackPointer(router.stackBackPointer + 1);
+      // close app or block
+      if (topRoute != null && !topRoute.allowPop) {
+        topRoute.onPopInvoked(false);
+        return doNothing;
+      } else {
+        topRoute?.onPopInvoked(true);
+        return closeApp;
+      }
     }
-    return SynchronousFuture(true);
+    return doNothing;
   }
 
   @override
@@ -95,6 +116,10 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
       ),
     );
   }
+}
+
+extension on Route {
+  bool get allowPop => popDisposition != RoutePopDisposition.doNotPop;
 }
 
 extension BuildContextRouter on BuildContext {
@@ -180,8 +205,9 @@ class _Navigator extends StatelessWidget {
       pages: router.stack,
       transitionDelegate: ImpTransitionDelegate(),
       onPopPage: (route, result) {
-        router.pop();
-        return route.didPop(result);
+        final res = route.didPop(result);
+        if (res) router.pop();
+        return res;
       },
     );
   }

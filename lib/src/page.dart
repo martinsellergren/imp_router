@@ -37,9 +37,11 @@ class ImpPage extends Page {
   @internal
   Function(ImpPage page)? onWidgetUnmounting;
 
+  ImpRoute? createdRoute;
+
   @override
   Route createRoute(BuildContext context) {
-    return ImpRoute(
+    final route = ImpRoute(
       builder: (context) => KeyedSubtree(
         key: widgetKey,
         child: widget,
@@ -50,6 +52,8 @@ class ImpPage extends Page {
       onWidgetMounting: onWidgetMounting!,
       onWidgetUnmounting: onWidgetUnmounting!,
     );
+    createdRoute = route;
+    return route;
   }
 
   @override

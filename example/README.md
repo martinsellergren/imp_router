@@ -12,6 +12,9 @@ Basic example app using imp_router.
 
 Showcasing some more advanced features. In addition to the basic example:
 
+- Use PopScope to block android back button
+  - homePage requires two back button clicks before app is closed,
+  - user page always blocks (including iOS back swipe)
 - Show a login page overlay, whenever user is not logged in.
 - Listen on navigation changes and print the new stack.
 - web: Preserve state when back-navigating, illustrated through text fields.

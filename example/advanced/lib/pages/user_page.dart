@@ -13,48 +13,52 @@ class UserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userData = context.userState();
     final userName = context.userState(select: (state) => state.data?.userName);
-    return Scaffold(
-      appBar: AppBar(
-        leading: const MyBackButton(),
-        title: Text('User page for $userName'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextButton(
-              onPressed: () => context.impRouter.push(
-                const UserPage(),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const MyBackButton(),
+          title: Text('User page for $userName'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                onPressed: () => context.impRouter.push(
+                  const UserPage(),
+                ),
+                child: const Text('Push another on top'),
               ),
-              child: const Text('Push another on top'),
-            ),
-            TextButton(
-              onPressed: () => context.impRouter.push(
-                const UserPage(),
-                replace: true,
+              TextButton(
+                onPressed: () => context.impRouter.push(
+                  const UserPage(),
+                  replace: true,
+                ),
+                child: const Text('Push another and replace top'),
               ),
-              child: const Text('Push another and replace top'),
-            ),
-            TextButton(
-              onPressed: () {
-                final router = context.impRouter;
-                router.pushNewStack([
-                  router.stack.first.widget is HomePage
-                      ? router.stack.first
-                      : ImpPage(
-                          widget: const HomePage(),
-                          transition: const FadeThroughPageTransitionsBuilder(),
-                        ),
-                ]);
-              },
-              child: const Text('Home'),
-            ),
-            TextButton(
-              onPressed: () => context.userRepo.logout(),
-              child: Text('Logout $userName ($userData)'),
-            ),
-            const TextField(decoration: InputDecoration(filled: true)),
-          ],
+              TextButton(
+                onPressed: () {
+                  final router = context.impRouter;
+                  router.pushNewStack([
+                    router.stack.first.widget is HomePage
+                        ? router.stack.first
+                        : ImpPage(
+                            widget: const HomePage(),
+                            transition:
+                                const FadeThroughPageTransitionsBuilder(),
+                          ),
+                  ]);
+                },
+                child: const Text('Home'),
+              ),
+              TextButton(
+                onPressed: () => context.userRepo.logout(),
+                child: Text('Logout $userName ($userData)'),
+              ),
+              const TextField(decoration: InputDecoration(filled: true)),
+            ],
+          ),
         ),
       ),
     );

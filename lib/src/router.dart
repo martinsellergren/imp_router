@@ -52,7 +52,7 @@ class ImpRouter with ChangeNotifier {
   ///
   /// The iOS back swipe is really common and expected to work on iOS devices.
   /// So any custom page transitions you specify when pushing may not do well
-  /// on iOS, as back swipe requires transition=CupertinoPageTransitionsBuilder.
+  /// on iOS, as back swipe requires transition=[CupertinoPageTransitionsBuilder].
   final bool forceBackSwipeableTransitionsOnIos;
 
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
