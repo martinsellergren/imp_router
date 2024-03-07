@@ -56,8 +56,8 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.settings),
                 onPressed: () => context.impRouter.push(
                   const UserPage(),
-                  transition: ContainerTransformPageTransitionsBuilder(
-                      context: context),
+                  transition:
+                      ContainerTransformPageTransition(context: context),
                 ),
               ),
             ),

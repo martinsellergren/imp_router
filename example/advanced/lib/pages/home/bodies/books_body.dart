@@ -36,7 +36,7 @@ class _BooksBodyState extends State<BooksBody> {
                           transition:
                               Theme.of(context).platform == TargetPlatform.iOS
                                   ? const CupertinoPageTransitionsBuilder()
-                                  : ContainerTransformPageTransitionsBuilder(
+                                  : ContainerTransformPageTransition(
                                       context: context,
                                     ),
                         ),

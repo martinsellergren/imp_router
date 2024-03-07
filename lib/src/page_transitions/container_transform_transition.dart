@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 /// Note for ios: This transformer doesn't work with iOS back swipe to pop.
 /// If you want back swipe to work, you'll have to use
 /// [CupertinoPageTransitionsBuilder] or similar.
-class ContainerTransformPageTransitionsBuilder extends PageTransitionsBuilder {
+class ContainerTransformPageTransition extends PageTransitionsBuilder {
   /// Must be a context of same size as the trigger button.
   /// Normally just wrap he button in a Builder and the context will be good.
   final BuildContext context;
 
-  ContainerTransformPageTransitionsBuilder({required this.context});
+  ContainerTransformPageTransition({required this.context});
 
   late final _tween = _createTween(context);
 

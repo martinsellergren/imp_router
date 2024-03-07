@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 
 import 'config.dart';
 import 'page.dart';
-import 'utils/container_transform_transition.dart';
+import 'page_transitions/container_transform_transition.dart';
 import 'utils/history_transformers.dart';
 import 'utils/utils.dart';
 
@@ -154,7 +154,7 @@ class ImpRouter with ChangeNotifier {
   /// as well as flutter's default PageTransitionsBuilder implementations, like
   /// [FadeUpwardsPageTransitionsBuilder], [OpenUpwardsPageTransitionsBuilder],
   /// [ZoomPageTransitionsBuilder] and [CupertinoPageTransitionsBuilder]. Also
-  /// checkout [ContainerTransformPageTransitionsBuilder].
+  /// checkout [ContainerTransformPageTransition].
   /// For iOS back swipe to work, [CupertinoPageTransitionsBuilder] is the way
   /// to go. When no [transition] is provided, it defaults to
   /// [ThemeData.pageTransitionsTheme].
@@ -162,11 +162,16 @@ class ImpRouter with ChangeNotifier {
     Widget page, {
     bool replace = false,
     PageTransitionsBuilder? transition,
+    Duration? transitionDuration,
   }) {
     final newStack = currentStack?.toList() ?? [];
     if (replace && newStack.isNotEmpty) newStack.removeLast();
     newStack.add(
-      ImpPage(widget: page, transition: transition),
+      ImpPage(
+        widget: page,
+        transition: transition,
+        transitionDuration: transitionDuration,
+      ),
     );
     pushNewStack(newStack);
   }

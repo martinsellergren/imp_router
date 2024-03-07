@@ -18,12 +18,14 @@ class ImpPage extends Page {
   final GlobalKey widgetKey;
   final Widget widget;
   final PageTransitionsBuilder? transition;
+  final Duration? transitionDuration;
 
   ImpPage({
     this.uri,
     GlobalKey? widgetKey,
     required this.widget,
     this.transition,
+    this.transitionDuration,
   })  : widgetKey = widgetKey ?? GlobalKey(),
         super(
           name: uri.toString(),
@@ -49,6 +51,7 @@ class ImpPage extends Page {
       ),
       settings: this,
       transition: transition,
+      myTransitionDuration: transitionDuration,
       onWidgetMounting: onWidgetMounting!,
       onWidgetUnmounting: onWidgetUnmounting!,
     );
@@ -58,24 +61,33 @@ class ImpPage extends Page {
 
   @override
   String toString() {
-    return 'ImpPage(uri=$uri)'; // widget=${widget.runtimeType}, widgetKey=$widgetKey, hash=$hashCode)';
+    return 'ImpPage(uri=$uri widget=${widget.runtimeType}, widgetKey=$widgetKey, hash=$hashCode)';
   }
 }
 
 class ImpRoute extends MaterialPageRoute {
+  final PageTransitionsBuilder? transition;
+  final Duration? myTransitionDuration;
+  final Function(ImpPage page) onWidgetMounting;
+  final Function(ImpPage page) onWidgetUnmounting;
+
   ImpRoute({
     required super.builder,
     required super.settings,
     required this.transition,
+    this.myTransitionDuration,
     required this.onWidgetMounting,
     required this.onWidgetUnmounting,
   });
 
-  final PageTransitionsBuilder? transition;
-
-  final Function(ImpPage page) onWidgetMounting;
-  final Function(ImpPage page) onWidgetUnmounting;
   bool _didCallWidgetUnmounting = false;
+
+  @override
+  Duration get transitionDuration =>
+      (myTransitionDuration == Duration.zero
+          ? const Duration(milliseconds: 1)
+          : myTransitionDuration) ??
+      super.transitionDuration;
 
   @override
   void install() {
@@ -98,7 +110,7 @@ class ImpRoute extends MaterialPageRoute {
       duration: transitionDuration,
       reverseDuration: reverseTransitionDuration,
       vsync: navigator!,
-    )..addStatusListener((status) {
+    )..addStatusListener((status) async {
         if (status == AnimationStatus.dismissed) {
           onWidgetUnmounting(settings as ImpPage);
           _didCallWidgetUnmounting = true;
