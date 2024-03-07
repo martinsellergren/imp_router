@@ -47,14 +47,6 @@ class ImpRouter with ChangeNotifier {
   /// Only relevant when [historyTransformer] = [chronologicalHistoryTransformer].
   final int nKeepAlives;
 
-  /// On iOS, override any custom page transition passed to e.g [ImpRouter.push],
-  /// so that back swipe will work.
-  ///
-  /// The iOS back swipe is really common and expected to work on iOS devices.
-  /// So any custom page transitions you specify when pushing may not do well
-  /// on iOS, as back swipe requires transition=[CupertinoPageTransitionsBuilder].
-  final bool forceBackSwipeableTransitionsOnIos;
-
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
 
   int _stackBackPointer = 0;
@@ -69,7 +61,6 @@ class ImpRouter with ChangeNotifier {
     required this.initialPage,
     HistoryTransformer? historyTransformer,
     int? nKeepAlives,
-    this.forceBackSwipeableTransitionsOnIos = false,
   })  : nKeepAlives = nKeepAlives ?? (kIsWeb ? 10 : 0),
         historyTransformer =
             (historyTransformer ?? platformDefaultHistoryTransformer) {
@@ -147,8 +138,6 @@ class ImpRouter with ChangeNotifier {
         .map(
           (e) => e
             ..uri ??= pageToUri?.call(e.widget)
-            ..forceBackSwipeableTransitionsOnIos =
-                forceBackSwipeableTransitionsOnIos
             ..onWidgetMounting = _addMountedPage
             ..onWidgetUnmounting = _removeMountedPage,
         )
@@ -239,7 +228,6 @@ class ImpRouter with ChangeNotifier {
             transition: transition ?? const FadeThroughPageTransitionsBuilder(),
           )
           ..uri ??= pageToUri?.call(overlay)
-          ..forceBackSwipeableTransitionsOnIos = false
           ..onWidgetMounting = (_) {}
           ..onWidgetUnmounting = (_) {});
     notifyListeners();

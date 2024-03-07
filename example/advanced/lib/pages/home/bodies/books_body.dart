@@ -33,9 +33,12 @@ class _BooksBodyState extends State<BooksBody> {
                         title: Text(e),
                         onTap: () => context.impRouter.push(
                           BookDetailsPage(title: e),
-                          transition: ContainerTransformPageTransitionsBuilder(
-                            context: context,
-                          ),
+                          transition:
+                              Theme.of(context).platform == TargetPlatform.iOS
+                                  ? const CupertinoPageTransitionsBuilder()
+                                  : ContainerTransformPageTransitionsBuilder(
+                                      context: context,
+                                    ),
                         ),
                       ),
                     ),

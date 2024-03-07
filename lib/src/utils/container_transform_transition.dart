@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Container transform that mimic material3's OpenContainer.
+/// Container transform that mimic material3's OpenContainer.
+///
+/// Note for ios: This transformer doesn't work with iOS back swipe to pop.
+/// If you want back swipe to work, you'll have to use
+/// [CupertinoPageTransitionsBuilder] or similar.
 class ContainerTransformPageTransitionsBuilder extends PageTransitionsBuilder {
   /// Must be a context of same size as the trigger button.
   /// Normally just wrap he button in a Builder and the context will be good.

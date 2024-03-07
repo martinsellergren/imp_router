@@ -26,7 +26,6 @@ class _AppState extends State<App> {
     initialPage: const HomePage(),
     pageToUri: pageToUri,
     uriToPage: uriToPage,
-    forceBackSwipeableTransitionsOnIos: true,
   );
   late final _userRepo = UserRepo(prefs: widget.prefs);
 

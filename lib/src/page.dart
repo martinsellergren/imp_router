@@ -31,8 +31,6 @@ class ImpPage extends Page {
         );
 
   @internal
-  bool? forceBackSwipeableTransitionsOnIos;
-  @internal
   Function(ImpPage page)? onWidgetMounting;
   @internal
   Function(ImpPage page)? onWidgetUnmounting;
@@ -51,7 +49,6 @@ class ImpPage extends Page {
       ),
       settings: this,
       transition: transition,
-      forceBackSwipeableTransitionsOnIos: forceBackSwipeableTransitionsOnIos!,
       onWidgetMounting: onWidgetMounting!,
       onWidgetUnmounting: onWidgetUnmounting!,
     );
@@ -70,14 +67,12 @@ class ImpRoute extends MaterialPageRoute {
     required super.builder,
     required super.settings,
     required this.transition,
-    required this.forceBackSwipeableTransitionsOnIos,
     required this.onWidgetMounting,
     required this.onWidgetUnmounting,
   });
 
   final PageTransitionsBuilder? transition;
 
-  final bool forceBackSwipeableTransitionsOnIos;
   final Function(ImpPage page) onWidgetMounting;
   final Function(ImpPage page) onWidgetUnmounting;
   bool _didCallWidgetUnmounting = false;
@@ -114,16 +109,11 @@ class ImpRoute extends MaterialPageRoute {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return transition != null && _allowCustomTransitions(context)
+    return transition != null
         ? transition!.buildTransitions(
             this, context, animation, secondaryAnimation, child)
         : Theme.of(context).pageTransitionsTheme.buildTransitions(
             this, context, animation, secondaryAnimation, child);
-  }
-
-  bool _allowCustomTransitions(BuildContext context) {
-    return !(Theme.of(context).platform == TargetPlatform.iOS &&
-        forceBackSwipeableTransitionsOnIos);
   }
 }
 
