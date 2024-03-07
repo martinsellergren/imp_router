@@ -40,6 +40,9 @@ class ImpPage extends Page {
   ImpRoute? createdRoute;
 
   @override
+  String? get name => uri.toString();
+
+  @override
   Route createRoute(BuildContext context) {
     final route = ImpRoute(
       builder: (context) => KeyedSubtree(
