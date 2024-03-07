@@ -20,12 +20,9 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
       res.add(e);
     }
     for (final entry in locationToExitingPageRoute.entries) {
-      final parent = entry.key;
       final e = entry.value;
       if (e.isWaitingForExitingDecision) {
-        e.isAnUpdate(newPageRouteHistory) || parent == null
-            ? e.markForRemove()
-            : e.markForPop();
+        e.isAnUpdate(newPageRouteHistory) ? e.markForRemove() : e.markForPop();
         pageRouteToPagelessRoutes[e]?.forEach((e) => e.markForPop());
       }
       res.add(e);
