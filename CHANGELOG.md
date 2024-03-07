@@ -1,3 +1,11 @@
+## 0.2.0
+
+* Support transition duration when pushing, plus add more predefined page transitions.
+* Remove transition defaults when pushing.
+* Remove ImpRouter.forceBackSwipeableTransitionsOnIos.
+* Fix preserve state of single route stack when replacing current.
+* Let Route.name return the uri.
+
 ## 0.1.1
 
 * Support PopScope with android back button.

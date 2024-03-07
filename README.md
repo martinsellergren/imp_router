@@ -37,7 +37,7 @@ final impRouter = ImpRouter(
 - The ImpRouter should only be created once so do not create it in a widget's build().
 - You may use this instance to listen on navigation events, through `impRouter.stackStream`.
 - If you create the ImpRouter in main(), start with WidgetsFlutterBinding.ensureInitialized().
-- uriToPage is unnecessary for a non-web app with no deep-link support.
+- uriToPage is unnecessary for a non-web apps with no deep-link support.
 - pageToUri for non-web apps can still be useful, for attaching an id to a page, and intelligently handle android back navigation.
 
 ### Create the app
