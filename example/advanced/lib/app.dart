@@ -65,8 +65,11 @@ class _AppState extends State<App> {
         StreamProvider.value(
             initialData: _userRepo.state, value: _userRepo.stream),
       ],
-      child: MaterialApp.router(
-        routerConfig: ImpRouterConfig(router: _router),
+      child: ColoredBox(
+        color: Colors.white,
+        child: MaterialApp.router(
+          routerConfig: ImpRouterConfig(router: _router),
+        ),
       ),
     );
   }

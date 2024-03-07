@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Library of $userName'),
           actions: [
             Builder(
@@ -77,6 +78,17 @@ class _HomePageState extends State<HomePage> {
             final newTab = HomeTab.values[i];
             if (newTab != widget.tab) {
               context.impRouter.updateCurrent(HomePage(tab: newTab));
+              // alt:
+              // If you instead of updateCurrent use push with replace like below,
+              // then a new state is created for the widget (it's not preserved
+              // as above approach).
+              // Upside on web, when navigating back with nav buttons, the state
+              // will be just as when you left it:
+              // context.impRouter.push(
+              //   HomePage(tab: newTab),
+              //   replace: true,
+              //   transition: FadePageTransition(),
+              // );
             }
           },
           destinations: HomeTab.values
