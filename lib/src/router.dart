@@ -177,15 +177,7 @@ class ImpRouter with ChangeNotifier {
     final newStack = currentStack?.toList() ?? [];
     if (replace && newStack.isNotEmpty) newStack.removeLast();
     newStack.add(
-      ImpPage(
-        widget: page,
-        transition: transition ??
-            (replace
-                ? const FadeThroughPageTransitionsBuilder()
-                : const SharedAxisPageTransitionsBuilder(
-                    transitionType: SharedAxisTransitionType.horizontal,
-                  )),
-      ),
+      ImpPage(widget: page, transition: transition),
     );
     pushNewStack(newStack);
   }
