@@ -211,7 +211,7 @@ class _Navigator extends StatelessWidget {
       transitionDelegate: ImpTransitionDelegate(),
       onPopPage: (route, result) {
         final res = route.didPop(result);
-        if (res) router.pop();
+        if (res) router.popRoute(route);
         return res;
       },
     );

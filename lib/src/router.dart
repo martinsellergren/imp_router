@@ -98,6 +98,13 @@ class ImpRouter with ChangeNotifier {
   List<ImpPage>? get currentStack =>
       stackHistory.elementAtSafe(stackHistory.length - 1 - _stackBackPointer);
 
+  @internal
+  void popRoute(Route route) {
+    final newStack = currentStack?.toList() ?? [];
+    newStack.removeWhere((e) => e == route.impPage);
+    pushNewStack(newStack);
+  }
+
   // public interface:
 
   /// Empty only before router has shown first page.
@@ -132,6 +139,10 @@ class ImpRouter with ChangeNotifier {
   /// If you aim for a page update, like [updateCurrent], the new ImpPage
   /// should have same widgetKey and transition as replaced page.
   void pushNewStack(List<ImpPage> newStack) {
+    if (newStack.isEmpty) {
+      debugPrint('imp_router: Attempted to pop last route. Not allowed.');
+      return;
+    }
     List.generate(_stackBackPointer, (index) => stackHistory.removeLast());
     _stackBackPointer = 0;
     stackHistory.add(newStack

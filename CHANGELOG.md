@@ -1,3 +1,8 @@
+## 0.2.1
+
+* Make sure to always pop correct route.
+* Don't allow popping last route.
+
 ## 0.2.0
 
 * Support transition duration when pushing, plus add more predefined page transitions.
