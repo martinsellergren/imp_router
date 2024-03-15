@@ -1,3 +1,7 @@
+## 0.2.2
+
+* Fix bug related to popping pageless routes.
+
 ## 0.2.1
 
 * Make sure to always pop correct route.

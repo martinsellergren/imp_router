@@ -23,7 +23,8 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
       final e = entry.value;
       if (e.isWaitingForExitingDecision) {
         e.isAnUpdate(newPageRouteHistory) ? e.markForRemove() : e.markForPop();
-        pageRouteToPagelessRoutes[e]?.forEach((e) => e.markForPop());
+        pageRouteToPagelessRoutes[e]?.forEach(
+            (e) => e.isWaitingForExitingDecision ? e.markForPop() : null);
       }
       res.add(e);
     }
@@ -69,7 +70,9 @@ class NoAnimationTransitionDelegate extends TransitionDelegate<void> {
             pageRouteToPagelessRoutes[exitingPageRoute];
         if (pagelessRoutes != null) {
           for (final RouteTransitionRecord pagelessRoute in pagelessRoutes) {
-            pagelessRoute.markForRemove();
+            if (pagelessRoute.isWaitingForExitingDecision) {
+              pagelessRoute.markForRemove();
+            }
           }
         }
       }
