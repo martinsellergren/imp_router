@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'config.dart';
 import 'page.dart';
@@ -47,7 +48,19 @@ class ImpRouter with ChangeNotifier {
   /// Only relevant when [historyTransformer] = [chronologicalHistoryTransformer].
   final int nKeepAlives;
 
+  /// Throttle time for navigation events.
+  ///
+  /// Ignore events which are too close in time. This might happen for example if
+  /// there is some extra trash click when you tried to just click a button onces.
+  /// Goes like this:
+  /// - Event 1, received and processed.
+  /// - Event 2 received in less than throttleDuration after event 1 - and so is ignored.
+  /// - Event 3 received in more than throttleDuration after event 1 - and so is processed.
+  final Duration throttleDuration;
+
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
+  late final _in = StreamController<Function>()
+    ..stream.throttleTime(throttleDuration).map((f) => f()).listen(null);
 
   int _stackBackPointer = 0;
   final List<ImpPage> _mountedPages = [];
@@ -61,6 +74,7 @@ class ImpRouter with ChangeNotifier {
     required this.initialPage,
     HistoryTransformer? historyTransformer,
     int? nKeepAlives,
+    this.throttleDuration = const Duration(milliseconds: 50),
   })  : nKeepAlives = nKeepAlives ?? (kIsWeb ? 10 : 0),
         historyTransformer =
             (historyTransformer ?? platformDefaultHistoryTransformer) {
@@ -74,6 +88,7 @@ class ImpRouter with ChangeNotifier {
   @override
   void dispose() {
     _stackStreamController.close();
+    _in.close();
     super.dispose();
   }
 
@@ -139,22 +154,26 @@ class ImpRouter with ChangeNotifier {
   /// If you aim for a page update, like [updateCurrent], the new ImpPage
   /// should have same widgetKey and transition as replaced page.
   void pushNewStack(List<ImpPage> newStack) {
-    if (newStack.isEmpty) {
-      debugPrint('imp_router: Attempted to pop last route. Not allowed.');
-      return;
+    void f() {
+      if (newStack.isEmpty) {
+        debugPrint('imp_router: Attempted to pop last route. Not allowed.');
+        return;
+      }
+      List.generate(_stackBackPointer, (index) => stackHistory.removeLast());
+      _stackBackPointer = 0;
+      stackHistory.add(newStack
+          .map(
+            (e) => e
+              ..uri ??= pageToUri?.call(e.widget)
+              ..onWidgetMounting = _addMountedPage
+              ..onWidgetUnmounting = _removeMountedPage,
+          )
+          .toList());
+      stackHistory = historyTransformer(stackHistory);
+      notifyListeners();
     }
-    List.generate(_stackBackPointer, (index) => stackHistory.removeLast());
-    _stackBackPointer = 0;
-    stackHistory.add(newStack
-        .map(
-          (e) => e
-            ..uri ??= pageToUri?.call(e.widget)
-            ..onWidgetMounting = _addMountedPage
-            ..onWidgetUnmounting = _removeMountedPage,
-        )
-        .toList());
-    stackHistory = historyTransformer(stackHistory);
-    notifyListeners();
+
+    stack.isEmpty ? f() : _in.add(f);
   }
 
   /// Push a new [page] to the top of the stack.

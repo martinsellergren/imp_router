@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Support throttleDuration.
+
 ## 0.2.2
 
 * Fix bug related to popping pageless routes.
