@@ -13,7 +13,9 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
     final List<RouteTransitionRecord> res = [];
     for (final e in newPageRouteHistory) {
       if (e.isWaitingForEnteringDecision) {
-        e.isAnUpdate(locationToExitingPageRoute.values.toList())
+        locationToExitingPageRoute.containsKey(e) ||
+                newPageRouteHistory.last != e ||
+                e.isAnUpdate(locationToExitingPageRoute.values.toList())
             ? e.markForAdd()
             : e.markForPush();
       }
@@ -22,7 +24,10 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
     for (final entry in locationToExitingPageRoute.entries) {
       final e = entry.value;
       if (e.isWaitingForExitingDecision) {
-        e.isAnUpdate(newPageRouteHistory) ? e.markForRemove() : e.markForPop();
+        locationToExitingPageRoute.containsKey(e) ||
+                e.isAnUpdate(newPageRouteHistory)
+            ? e.markForRemove()
+            : e.markForPop();
         pageRouteToPagelessRoutes[e]?.forEach(
             (e) => e.isWaitingForExitingDecision ? e.markForPop() : null);
       }
