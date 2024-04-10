@@ -153,7 +153,10 @@ class ImpRouter with ChangeNotifier {
   ///
   /// If you aim for a page update, like [updateCurrent], the new ImpPage
   /// should have same widgetKey and transition as replaced page.
-  void pushNewStack(List<ImpPage> newStack) {
+  ///
+  /// Set [disableThrottling] to true to make sure this update happens, even
+  /// when calls are very close in time (within [throttleDuration]).
+  void pushNewStack(List<ImpPage> newStack, {bool disableThrottling = false}) {
     void f() {
       if (newStack.isEmpty) {
         debugPrint('imp_router: Attempted to pop last route. Not allowed.');
@@ -173,7 +176,7 @@ class ImpRouter with ChangeNotifier {
       notifyListeners();
     }
 
-    stack.isEmpty ? f() : _in.add(f);
+    stack.isEmpty || disableThrottling ? f() : _in.add(f);
   }
 
   /// Push a new [page] to the top of the stack.
@@ -193,6 +196,7 @@ class ImpRouter with ChangeNotifier {
     bool replace = false,
     PageTransitionsBuilder? transition,
     Duration? transitionDuration,
+    bool disableThrottling = false,
   }) {
     final newStack = currentStack?.toList() ?? [];
     if (replace && newStack.isNotEmpty) newStack.removeLast();
@@ -203,12 +207,12 @@ class ImpRouter with ChangeNotifier {
         transitionDuration: transitionDuration,
       ),
     );
-    pushNewStack(newStack);
+    pushNewStack(newStack, disableThrottling: disableThrottling);
   }
 
   /// Pop current page. Throws if there's only 1 page on the stack currently
   /// (unless [fallback] is set).
-  void pop({Widget? fallback}) {
+  void pop({Widget? fallback, bool disableThrottling = false}) {
     final newStack = currentStack?.toList() ?? [];
     if (newStack.isNotEmpty) newStack.removeLast();
     if (newStack.isEmpty && fallback != null) {
@@ -219,13 +223,13 @@ class ImpRouter with ChangeNotifier {
         ),
       );
     }
-    pushNewStack(newStack);
+    pushNewStack(newStack, disableThrottling: disableThrottling);
   }
 
   /// Update current page with new parameters.
   /// [page] must be of same type as current page.
   /// This will trigger e.g didUpdateWidget if [page] is a stateful widget.
-  void updateCurrent(Widget page) {
+  void updateCurrent(Widget page, {bool disableThrottling = false}) {
     assert(page.runtimeType == top?.widget.runtimeType);
     final newStack = currentStack?.toList();
     if (newStack == null) return;
@@ -237,7 +241,7 @@ class ImpRouter with ChangeNotifier {
         widgetKey: replaced.widgetKey,
       ),
     );
-    pushNewStack(newStack);
+    pushNewStack(newStack, disableThrottling: disableThrottling);
   }
 
   /// Set an overlay page above everything else.
