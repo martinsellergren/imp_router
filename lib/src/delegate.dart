@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:animations/animations.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -31,7 +30,6 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
       router.push(
         router.initialPage,
         replace: true,
-        transition: const FadeThroughPageTransitionsBuilder(),
       );
       return SynchronousFuture(null);
     } else if (newPageHash != null && newPageHash == router.top.hashCode) {

@@ -1,3 +1,7 @@
+## 0.3.3
+
+* Remove initial page transition.
+
 ## 0.3.2
 
 * Disable hero animations by default.
