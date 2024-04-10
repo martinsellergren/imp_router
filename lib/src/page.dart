@@ -100,6 +100,7 @@ class ImpRoute extends MaterialPageRoute {
     if (!_didCallWidgetUnmounting) {
       // Fallback for case when route is markForRemove in the TransitionDelegate.
       onWidgetUnmounting(settings as ImpPage);
+      _didCallWidgetUnmounting = true;
     }
     super.dispose();
   }
@@ -111,16 +112,29 @@ class ImpRoute extends MaterialPageRoute {
       reverseDuration: reverseTransitionDuration,
       vsync: navigator!,
     )..addStatusListener((status) async {
-        if (status == AnimationStatus.dismissed) {
+        if (status == AnimationStatus.dismissed && !_didCallWidgetUnmounting) {
           onWidgetUnmounting(settings as ImpPage);
           _didCallWidgetUnmounting = true;
         }
       });
   }
 
+  bool _isMarkedForRemoval = false;
+
+  void notifyMarkedForRemoval() {
+    if (!_didCallWidgetUnmounting) {
+      Future(() {
+        _isMarkedForRemoval = true;
+        onWidgetUnmounting(settings as ImpPage);
+      });
+      _didCallWidgetUnmounting = true;
+    }
+  }
+
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
+    if (_isMarkedForRemoval) return const SizedBox();
     return transition != null
         ? transition!.buildTransitions(
             this, context, animation, secondaryAnimation, child)

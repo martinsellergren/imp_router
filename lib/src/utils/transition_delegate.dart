@@ -24,10 +24,15 @@ class ImpTransitionDelegate extends TransitionDelegate<void> {
     for (final entry in locationToExitingPageRoute.entries) {
       final e = entry.value;
       if (e.isWaitingForExitingDecision) {
-        locationToExitingPageRoute.containsKey(e) ||
-                e.isAnUpdate(newPageRouteHistory)
-            ? e.markForRemove()
-            : e.markForPop();
+        if (e.isAnUpdate(newPageRouteHistory)) {
+          e.markForRemove();
+        } else if (locationToExitingPageRoute.containsKey(e)) {
+          final route = e.route as ImpRoute;
+          route.notifyMarkedForRemoval();
+          e.markForPop();
+        } else {
+          e.markForPop();
+        }
         pageRouteToPagelessRoutes[e]?.forEach(
             (e) => e.isWaitingForExitingDecision ? e.markForPop() : null);
       }
