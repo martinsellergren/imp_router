@@ -1,3 +1,7 @@
+## 0.3.2
+
+* Disable hero animations by default.
+
 ## 0.3.1
 
 * Support disableThrottling.

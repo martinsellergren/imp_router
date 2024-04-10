@@ -102,7 +102,7 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
 
   @override
   Widget build(BuildContext context) {
-    return Provider.value(
+    final widget = Provider.value(
       value: router,
       child: _ForcePushUriOnPushingSamePage(
         router: router,
@@ -120,6 +120,9 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
         ),
       ),
     );
+    return router.enableHeroAnimations
+        ? widget
+        : HeroControllerScope.none(child: widget);
   }
 }
 

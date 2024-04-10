@@ -58,6 +58,15 @@ class ImpRouter with ChangeNotifier {
   /// - Event 3 received in more than throttleDuration after event 1 - and so is processed.
   final Duration throttleDuration;
 
+  /// This navigator disables hero animations by default by wrapping everything
+  /// in [HeroControllerScope.none]. Set this to true to enable hero animations.
+  ///
+  /// The reason why hero animations are disabled by default is because
+  /// the [HeroController] throws an assertion due to the way this navigator
+  /// handles page state preservation on web. Note though, it seems this assertion
+  /// is safe to simply ignore.
+  final bool enableHeroAnimations;
+
   final _stackStreamController = StreamController<List<ImpPage>>.broadcast();
   late final _in = StreamController<Function>()
     ..stream.throttleTime(throttleDuration).map((f) => f()).listen(null);
@@ -75,6 +84,7 @@ class ImpRouter with ChangeNotifier {
     HistoryTransformer? historyTransformer,
     int? nKeepAlives,
     this.throttleDuration = const Duration(milliseconds: 50),
+    this.enableHeroAnimations = false,
   })  : nKeepAlives = nKeepAlives ?? (kIsWeb ? 10 : 0),
         historyTransformer =
             (historyTransformer ?? platformDefaultHistoryTransformer) {
