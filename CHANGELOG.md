@@ -1,3 +1,7 @@
+## 0.3.4
+
+* Fix initialization.
+
 ## 0.3.3
 
 * Remove initial page transition.

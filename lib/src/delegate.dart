@@ -27,10 +27,7 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     final newUri = configuration.uri;
     final newPageHash = configuration.pageHash;
     if (newUri.path == '/') {
-      router.push(
-        router.initialPage,
-        replace: true,
-      );
+      router.pushNewStack([ImpPage(widget: router.initialPage)]);
       return SynchronousFuture(null);
     } else if (newPageHash != null && newPageHash == router.top.hashCode) {
       return SynchronousFuture(null);
