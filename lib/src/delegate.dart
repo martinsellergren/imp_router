@@ -27,7 +27,11 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     final newUri = configuration.uri;
     final newPageHash = configuration.pageHash;
     if (newUri.path == '/') {
-      router.pushNewStack([ImpPage(widget: router.initialPage)]);
+      if (router.stack.length != 1 ||
+          router.stack.first.widget != router.initialPage) {
+        router.pushNewStack([ImpPage(widget: router.initialPage)],
+            disableThrottling: true);
+      }
       return SynchronousFuture(null);
     } else if (newPageHash != null && newPageHash == router.top.hashCode) {
       return SynchronousFuture(null);
@@ -42,7 +46,7 @@ class ImpDelegate extends RouterDelegate<ImpRouteInformation>
     } else if (newUri != router.top?.uri) {
       final widget =
           router.uriToPage?.call(configuration.uri) ?? router.initialPage;
-      router.pushNewStack([ImpPage(widget: widget)]);
+      router.pushNewStack([ImpPage(widget: widget)], disableThrottling: true);
     }
     return SynchronousFuture(null);
   }
