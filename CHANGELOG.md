@@ -1,3 +1,7 @@
+## 0.3.6
+
+* Bump rxdart.
+
 ## 0.3.5
 
 * Avoid recreate initial page when router's ephemeral state is recreated but router's main state is not.
