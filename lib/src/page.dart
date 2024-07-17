@@ -99,7 +99,7 @@ class ImpRoute extends MaterialPageRoute {
   void dispose() {
     if (!_didCallWidgetUnmounting) {
       // Fallback for case when route is markForRemove in the TransitionDelegate.
-      onWidgetUnmounting(settings as ImpPage);
+      Future(() => onWidgetUnmounting(settings as ImpPage));
     }
     super.dispose();
   }

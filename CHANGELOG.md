@@ -1,3 +1,7 @@
+## 0.3.7
+
+* Fix uncaught error when disposing: "setState() or markNeedsBuild() called when widget tree was locked".
+
 ## 0.3.6
 
 * Bump rxdart.
