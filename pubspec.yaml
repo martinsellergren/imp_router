@@ -1,6 +1,6 @@
 name: imp_router
 description: "Imperative navigation in flutter. For those who prefer imperative navigation but still want to benefit from Navigation 2.0 features."
-version: 0.3.7
+version: 0.3.8
 repository: https://github.com/martinsellergren/imp_router
 issue_tracker: https://github.com/martinsellergren/imp_router/issues
 topics:
@@ -17,7 +17,7 @@ dependencies:
   animations: ^2.0.11
   collection: ^1.18.0
   provider: ^6.1.1
-  rxdart: ^0.28.0
+  rxdart: ">=0.27.0 <0.29.0"
   flutter_web_plugins:
     sdk: flutter
   meta: ^1.11.0

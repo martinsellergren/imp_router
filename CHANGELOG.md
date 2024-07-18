@@ -1,3 +1,7 @@
+## 0.3.8
+
+* Relax version constraint for rxdart.
+
 ## 0.3.7
 
 * Fix uncaught error when disposing: "setState() or markNeedsBuild() called when widget tree was locked".
